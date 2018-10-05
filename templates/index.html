@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="x-rim-auto-match" content="none">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>搜索</title>
+    <!-- Bootstrap -->
+
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../static/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <link href="../static/css/wcy.css" rel="stylesheet">
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../static/js/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+    <link href="../static/iconfont/iconfont.css" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="../static/bootstrap-table/bootstrap-table.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="../static/bootstrap-table/bootstrap-table.min.js"></script>
+
+    <!-- Latest compiled and minified Locales -->
+    <script src="../static/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#users a').click(function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            });
+            $('#navbar a').click(function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            });
+            $('#search').click(function (e) {
+
+                $('#sinaTable').bootstrapTable("refreshOptions", {searchText: $('#keywords').val()});
+                $('#sinaTable').bootstrapTable("refresh");
+                $('#zhihuTable').bootstrapTable("refreshOptions", {searchText: $('#keywords').val()});
+                $('#zhihuTable').bootstrapTable("refresh");
+                $('#synthesizeTable').bootstrapTable("refreshOptions", {searchText: $('#keywords').val()});
+                $('#synthesizeTable').bootstrapTable("refresh");
+            });
+
+            $('#sinaTable').bootstrapTable({
+                // class: 'table-no-bordered',
+                pagination: true,
+                sidePagination: 'server',
+                pageList: [5, 10, 20, 50, 100],
+                search: true,
+                searchText: $('#keywords').val(),
+                showHeader: false,
+                searchTimeOut: 1500,
+                searchOnEnterKey: true,
+                classes: 'table-bordered',
+                // cardView: true,
+                // detailView: true,
+                url: '/sina',
+                queryParams: function (params) {
+                    params.indexName = 'sina_index';
+                    return params;
+                },
+                columns: [{
+                    field: '_source.text',
+                    title: 'text',
+                    formatter: function (value, row, index) {
+                        var result =
+                            "<div class=\"col-xs-12 col-sm-12 col-md-12 col-wxg cw-jd clearfix\">\n" +
+                            "                    <div class=\"thumbnail\">\n" +
+                            "                        <div class=\"caption\">\n" +
+                            "                            <p class=\"caption-jdp\">" + row._source.text + "</p>\n" +
+                            "                            <p class=\"text-muted text-right\">" +
+                            "<span class=\"glyphicon glyphicon-thumbs-up text-info\" />&nbsp;" +
+                            row._source.attitudesCount +
+                            "&nbsp;&nbsp;&nbsp;<span class=\"glyphicon glyphicon-comment text-info\" />&nbsp;" +
+                            row._source.commentsCount + "</p>\n" +
+                            "                        </div>\n" +
+                            "                    </div>\n" +
+                            "                </div>";
+                        return result;
+                    }
+                }]
+            });
+
+            $('#zhihuTable').bootstrapTable({
+                // class: 'table-no-bordered',
+                pagination: true,
+                sidePagination: 'server',
+                pageList: [5, 10, 20, 50, 100],
+                search: true,
+                searchText: $('#keywords').val(),
+                showHeader: false,
+                searchTimeOut: 1500,
+                searchOnEnterKey: true,
+                classes: 'table-bordered',
+                // cardView: true,
+                // detailView: true,
+                url: '/zhihu',
+                queryParams: function (params) {
+                    params.indexName = 'zhihu_index';
+                    return params;
+                },
+                onPostBody: function () {
+                    $('figure').remove();
+                },
+                columns: [{
+                    field: '_source.text',
+                    title: 'text',
+                    formatter: function (value, row, index) {
+                        var result = "<div class=\"col-xs-12 col-sm-12 col-md-12 col-wxg cw-jd clearfix\">\n" +
+                            "                    <div class=\"thumbnail\">\n" +
+                            "                        <div class=\"caption\">\n" +
+                            // "                            <h3 class=\"text-center\">红塔大酒店</h3>\n" +
+                            "                            <p class=\"caption-jdp\">" + row._source.content + "</p>\n" +
+                            // "                            <br>\n" +
+                            "                            <p class=\"text-muted text-right\">" +
+                            "<span class=\"glyphicon glyphicon-thumbs-up text-info\" />&nbsp;" +
+                            //    "<span class=\"glyphicon glyphicon-heart-empty\" />" +
+                            //    "点赞： " +
+                            row._source.voteupCount +
+                            //    " <span class=\"glyphicon glyphicon-edit\" /><span class=\"glyphicon glyphicon-share\" />" +
+                            "&nbsp;&nbsp;&nbsp;<span class=\"glyphicon glyphicon-comment text-info\" />&nbsp;" +
+                            //    "评论： " +
+                            row._source.commentCount + "</p>\n" +
+                            // "                            <p class=\"caption-jdpp\">评论数： " + row._source.commentsCount + "</p>\n" +
+                            "                        </div>\n" +
+                            "                    </div>\n" +
+                            "                </div>";
+                        return result;
+                    }
+                }]
+            });
+
+            $('#synthesizeTable').bootstrapTable({
+                // class: 'table-no-bordered',
+                pagination: true,
+                sidePagination: 'server',
+                pageList: [5, 10, 20, 50, 100],
+                search: true,
+                searchText: $('#keywords').val(),
+                showHeader: false,
+                searchTimeOut: 1500,
+                searchOnEnterKey: true,
+                classes: 'table-bordered',
+                // cardView: true,
+                // detailView: true,
+                url: '/synthesize',
+                queryParams: function (params) {
+                    params.indexName = 'sina_index';
+                    return params;
+                },
+                columns: [{
+                    field: '_source.text',
+                    title: 'text',
+                    formatter: function (value, row, index) {
+                        var result = "<div class=\"col-xs-12 col-sm-12 col-md-12 col-wxg cw-jd clearfix\">\n" +
+                            "                    <div class=\"thumbnail\">\n" +
+                            "                        <div class=\"caption\">\n" +
+                            // "                            <h3 class=\"text-center\">红塔大酒店</h3>\n" +
+                            "                            <p class=\"caption-jdp\">" + row._source.content + "</p>\n" +
+                            // "                            <br>\n" +
+                            "                            <p class=\"text-muted text-right\">" +
+                            "<span class=\"glyphicon glyphicon-thumbs-up text-info\" />&nbsp;" +
+                            //    "<span class=\"glyphicon glyphicon-heart-empty\" />" +
+                            //    "点赞： " +
+                            row._source.voteupCount +
+                            //    " <span class=\"glyphicon glyphicon-edit\" /><span class=\"glyphicon glyphicon-share\" />" +
+                            "&nbsp;&nbsp;&nbsp;<span class=\"glyphicon glyphicon-comment text-info\" />&nbsp;" +
+                            //    "评论： " +
+                            row._source.commentCount + "</p>\n" +
+                            // "                            <p class=\"caption-jdpp\">评论数： " + row._source.commentsCount + "</p>\n" +
+                            "                        </div>\n" +
+                            "                    </div>\n" +
+                            "                </div>";
+                        return result;
+                    }
+                }]
+            });
+
+            $('body').scrollspy({target: '#navbar-example'});
+            $('#navbar-example').on('activate.bs.scrollspy', function () {
+                alert("aaa")
+                // do something…
+            });
+        });
+
+    </script>
+    <style>
+        body {
+            position: relative;
+        }
+
+    </style>
+</head>
+<body data-spy="scroll" data-target="#navbar-example" id="sss">
+<!--导航-->
+<div class="navbar-wrapper">
+    <div class="container">
+        <nav class="navbar  navbar-static-top">
+            <div class="container">
+                <div id="users" class="list-group navbar-header navbar-relative navbar-left">
+                    <ul class="nav navbar-nav nav-pills">
+                        <li><a href="#">user1</a></li>
+                        <li class="active"><a href="#about">user2</a></li>
+                        <li><a href="#contact">user3</a></li>
+                    </ul>
+                </div>
+                <form class="navbar-form pull-left" role="search">
+                    <div id="navbarForm" class="navbar-default navbar-form">
+                        <div class="input-group">
+                            <input id="keywords" type="text" class="form-control" placeholder="请输入关键字" value="马蓉"/>
+                            <span class="input-group-btn">
+                                <button id="search" class="btn btn-default" type="button">
+                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>搜索
+                                </button>
+                            </span>
+                        </div>
+                        <!--
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="请输入关键字">
+                        </div>
+                        <button type="submit" class="btn btn-default">搜索</button>
+                      </form>
+            -->
+                    </div>
+                </form>
+                <div id="navbar" class="navbar-collapse collapse navbar-right">
+                    <ul class="nav navbar-nav navbar-navxg navbar-right">
+                        <li role="presentation" class="active">
+                            <a href="#sina" aria-controls="sina" role="tab" data-toggle="tab">微博</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#zhihu" aria-controls="zhihu" role="tab" data-toggle="tab">知乎</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#synthesize" aria-controls="synthesize" role="tab" data-toggle="tab">综合</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <script>
+            $(document).ready(function () {
+                dropdownOpen();//调用
+            });
+
+            /**
+             * 鼠标划过就展开子菜单，免得需要点击才能展开
+             */
+            function dropdownOpen() {
+
+                var $dropdownLi = $('li.dropdown');
+
+                $dropdownLi.mouseover(function () {
+                    $(this).addClass('open');
+                }).mouseout(function () {
+                    $(this).removeClass('open');
+                });
+            }
+        </script>
+    </div>
+</div>
+<div>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="container marketing tab-pane active" id="sina">
+            sina...
+            <table id="sinaTable"></table>
+        </div>
+        <div role="tabpanel" class="container marketing tab-pane" id="zhihu">
+            <div>zhihu..
+                <table id="zhihuTable"></table>
+            </div>
+        </div>
+        <div role="tabpanel" class="container marketing tab-pane" id="synthesize">
+            <div>synthesize.</div>
+            <table id="synthesizeTable"></table>
+        </div>
+
+    </div>
+</div>
+</div>
+<!-- /.container -->
+</body>
+</html>

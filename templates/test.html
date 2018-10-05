@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="x-rim-auto-match" content="none">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>共享文档</title>
+    <!-- Bootstrap -->
+
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../static/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <link href="../static/css/wcy.css" rel="stylesheet">
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../static/js/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+    <link href="../static/iconfont/iconfont.css" rel="stylesheet">
+    <script>
+        $(function () {
+            $('a#calculate1').bind('click', function () {
+                $.getJSON('req', {
+                    a: $('input[name="a"]').val(),
+                    b: $('input[name="b"]').val()
+                }, function (data) {
+                    $("#result").text(data.result);
+                });
+                return false;
+            });
+            $('a#calculate').bind('click', function () {
+                var a = $('input[name="a"]').val();
+                var b = $('input[name="b"]').val();
+                $.getJSON('req/' + a + '/' + b, function (data) {
+                    $("#result").text(data.result);
+                });
+                return false;
+            });
+        });
+    </script>
+</head>
+<body>
+<!--导航-->
+<h1>jQuery Example</h1>
+<p><input type=text size=5 name=a> +
+    <input type=text size=5 name=b> =
+    <span id=result>?</span>
+<p>
+    <a href=# id=calculate1>calculate server side</a>
+    <a href=# id=calculate>calculate server side</a>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+
+</body>
+</html>
